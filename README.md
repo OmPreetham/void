@@ -2,6 +2,8 @@
 
 A sleek, monochromatic racing game where you battle against AI cars in a vast wireframe arena. The game features a unique visual style with wireframe graphics and dramatic visual effects.
 
+![Void Gameplay](gameplay.gif)
+
 [Try it on CodePen](https://codepen.io/OmPreetham/pen/xbxrRMB) | [View Source](https://github.com/OmPreetham/void)
 
 ## Features
