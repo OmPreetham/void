@@ -3,12 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Void - A Minimalist Car Combat Game</title>
+    <title>VOID - ENDLESS DRIFT</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
+    <div class="logo-container">
+        <div class="logo-letters">
+            <div class="logo-letter">V</div>
+            <div class="logo-letter">O</div>
+            <div class="logo-letter">I</div>
+            <div class="logo-letter">D</div>
+        </div>
+        <div class="logo-subtitle">ENDLESS DRIFT</div>
+    </div>
     <div id="game"></div>
+    <div class="touch-controls">
+        <div class="steering-overlay" id="steeringOverlay"></div>
+        <div class="right-controls">
+            <button class="control-btn auto-drive" data-key="AutoDrive">
+                <div class="auto-icon">A</div>
+                <div class="auto-status"></div>
+            </button>
+            <button class="control-btn shoot-btn" data-key="Space">SHOOT</button>
+        </div>
+    </div>
     <script src="game.js"></script>
 </body>
 </html> 

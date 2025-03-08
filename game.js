@@ -788,27 +788,107 @@ class Game {
     }
     
     setupEventListeners() {
-        document.addEventListener('keydown', (e) => {
-            if (this.gameOver && e.code === 'Space') {
-                // Restart game when space is pressed after game over
+        document.addEventListener('keydown', (event) => {
+            if (this.gameOver && event.code === 'Space') {
                 this.restartGame();
                 return;
             }
 
-            if (e.code === 'Space') {
+            if (event.code === 'Space') {
                 this.keys.Space = true;
-            } else if (this.keys.hasOwnProperty(e.key)) {
-                this.keys[e.key] = true;
+            } else if (this.keys.hasOwnProperty(event.code)) {
+                this.keys[event.code] = true;
             }
         });
         
-        document.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') {
+        document.addEventListener('keyup', (event) => {
+            if (event.code === 'Space') {
                 this.keys.Space = false;
-            } else if (this.keys.hasOwnProperty(e.key)) {
-                this.keys[e.key] = false;
+            } else if (this.keys.hasOwnProperty(event.code)) {
+                this.keys[event.code] = false;
             }
         });
+
+        // Steering overlay controls
+        const overlay = document.getElementById('steeringOverlay');
+        let startX = 0;
+        let isDragging = false;
+
+        const handleSteering = (e) => {
+            if (!isDragging) return;
+            
+            let currentX;
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX;
+            } else {
+                currentX = e.clientX;
+            }
+            
+            const deltaX = currentX - startX;
+            const screenWidth = window.innerWidth;
+            const steeringAmount = (deltaX / screenWidth) * 3; // Adjust sensitivity
+
+            // Update steering based on touch position
+            this.keys.ArrowLeft = steeringAmount < -0.1;
+            this.keys.ArrowRight = steeringAmount > 0.1;
+        };
+
+        const startSteering = (e) => {
+            isDragging = true;
+            if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+            } else {
+                startX = e.clientX;
+            }
+        };
+
+        const endSteering = () => {
+            isDragging = false;
+            this.keys.ArrowLeft = false;
+            this.keys.ArrowRight = false;
+        };
+
+        // Touch events for steering overlay
+        overlay.addEventListener('touchstart', startSteering);
+        overlay.addEventListener('touchmove', handleSteering);
+        overlay.addEventListener('touchend', endSteering);
+        
+        // Mouse events for steering overlay (desktop testing)
+        overlay.addEventListener('mousedown', startSteering);
+        overlay.addEventListener('mousemove', handleSteering);
+        overlay.addEventListener('mouseup', endSteering);
+        overlay.addEventListener('mouseleave', endSteering);
+
+        // Auto-drive toggle
+        const autoBtn = document.querySelector('.auto-drive');
+        this.isAutoDriving = false;
+        
+        autoBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.isAutoDriving = !this.isAutoDriving;
+            autoBtn.classList.toggle('active');
+            this.keys.ArrowUp = this.isAutoDriving;
+        });
+
+        // Shoot button
+        const shootBtn = document.querySelector('.shoot-btn');
+        
+        shootBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys.Space = true;
+        });
+
+        shootBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys.Space = false;
+        });
+
+        // Prevent default touch behaviors
+        document.addEventListener('touchmove', (e) => {
+            if (e.target.closest('.touch-controls')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
     
     restartGame() {
