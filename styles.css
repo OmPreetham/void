@@ -111,9 +111,7 @@ body {
 }
 
 .right-controls {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
     gap: 20px;
     pointer-events: none;
 }
