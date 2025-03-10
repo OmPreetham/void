@@ -3,31 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID - ENDLESS DRIFT</title>
+    <title>VOID - ENDLESS DRIFT | Minimalist Racing Game</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="VOID is a minimalist racing game where you drift through an endless grid, avoiding hazards and enemy cars in a monochromatic world.">
+    <meta name="keywords" content="void game, racing game, drift game, minimalist game, browser game, 3D game">
+    <meta name="author" content="VOID Games">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://void.ompreetham.com/">
+    <meta property="og:title" content="VOID - ENDLESS DRIFT | Minimalist Racing Game">
+    <meta property="og:description" content="Drift through an endless grid, avoiding hazards and enemy cars in this minimalist racing experience.">
+    <meta property="og:image" content="https://void.ompreetham.com/logo.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://void.ompreetham.com/">
+    <meta property="twitter:title" content="VOID - ENDLESS DRIFT | Minimalist Racing Game">
+    <meta property="twitter:description" content="Drift through an endless grid, avoiding hazards and enemy cars in this minimalist racing experience.">
+    <meta property="twitter:image" content="https://void.ompreetham.com/logo.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://void.ompreetham.com/">
+    
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "VOID - ENDLESS DRIFT",
+      "description": "A minimalist racing game where you drift through an endless grid, avoiding hazards and enemy cars in a monochromatic world.",
+      "genre": ["Racing", "Action", "Indie"],
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "image": "https://void.ompreetham.com/logo.jpg",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    </script>
 </head>
 <body>
-    <div class="logo-container">
-        <div class="logo-letters">
-            <div class="logo-letter">V</div>
-            <div class="logo-letter">O</div>
-            <div class="logo-letter">I</div>
-            <div class="logo-letter">D</div>
+    <header>
+        <div class="logo-container">
+            <div class="logo-letters">
+                <div class="logo-letter">V</div>
+                <div class="logo-letter">O</div>
+                <div class="logo-letter">I</div>
+                <div class="logo-letter">D</div>
+            </div>
+            <div class="logo-subtitle">ENDLESS DRIFT</div>
         </div>
-        <div class="logo-subtitle">ENDLESS DRIFT</div>
-    </div>
-    <div id="game"></div>
+    </header>
+    
+    <main>
+        <div id="game" aria-label="VOID racing game interface"></div>
+    </main>
+    <div class="steering-overlay" id="steeringOverlay" aria-label="Steering control area"></div>
+
     <div class="touch-controls">
-        <div class="steering-overlay" id="steeringOverlay"></div>
         <div class="right-controls">
-            <button class="control-btn auto-drive" data-key="AutoDrive">
+            <button class="control-btn auto-drive" data-key="AutoDrive" aria-label="Toggle auto-drive">
                 <div class="auto-icon">A</div>
                 <div class="auto-status"></div>
             </button>
-            <button class="control-btn shoot-btn" data-key="Space">SHOOT</button>
+            <button class="control-btn shoot-btn" data-key="Space" aria-label="Shoot laser">SHOOT</button>
         </div>
     </div>
+    
     <script src="game.js"></script>
 </body>
 </html> 

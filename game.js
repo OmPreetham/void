@@ -47,7 +47,6 @@ class Car {
         this.laserCooldown = 0;
         this.laserColor = isPlayer ? 0xffffff : 0xaaaaaa;
         this.lasers = [];
-        this.shootSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA=='); // Empty audio for mobile
         
         // Random starting position for AI cars
         if (!isPlayer) {
@@ -373,15 +372,6 @@ class Car {
             lifetime: 40
         });
 
-        // Play laser sound
-        try {
-            const laserSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA==');
-            laserSound.volume = 0.3;
-            laserSound.play();
-        } catch (e) {
-            console.log('Audio not supported');
-        }
-
         this.laserCooldown = 10; // Faster shooting
     }
 
@@ -616,15 +606,6 @@ class Car {
                 rings.forEach(ring => this.scene.remove(ring));
             }
         }, 30);
-
-        // Play hit sound
-        try {
-            const hitSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA==');
-            hitSound.volume = 0.4;
-            hitSound.play();
-        } catch (e) {
-            console.log('Audio not supported');
-        }
     }
 }
 
@@ -1153,15 +1134,6 @@ class Game {
                 rings.forEach(ring => this.scene.remove(ring));
             }
         }, 30);
-
-        // Play hit sound
-        try {
-            const hitSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA==');
-            hitSound.volume = 0.4;
-            hitSound.play();
-        } catch (e) {
-            console.log('Audio not supported');
-        }
     }
 }
 
