@@ -1,3 +1,4 @@
+// Remove audio initialization functions
 class Car {
     constructor(isPlayer = false) {
         // Create main car body group
@@ -47,7 +48,6 @@ class Car {
         this.laserCooldown = 0;
         this.laserColor = isPlayer ? 0xffffff : 0xaaaaaa;
         this.lasers = [];
-        this.shootSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA=='); // Empty audio for mobile
         
         // Random starting position for AI cars
         if (!isPlayer) {
