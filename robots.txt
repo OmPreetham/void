@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Sitemap: https://void.ompreetham.com/sitemap.xml
+
+# Allow all web crawlers to access all content
+User-agent: *
+Disallow:
+
+# Specific rules for Google bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: / 

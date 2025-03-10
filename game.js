@@ -1,3 +1,40 @@
+let audioContext = null;
+let audioInitialized = false;
+
+function initAudio() {
+    if (audioInitialized) return;
+    
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioInitialized = true;
+    } catch (e) {
+        console.log('Web Audio API not supported');
+    }
+}
+
+function playSound(frequency, duration, type = 'sine', volume = 0.3) {
+    if (!audioContext) return;
+    
+    try {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+    } catch (e) {
+        console.log('Error playing sound:', e);
+    }
+}
+
 class Car {
     constructor(isPlayer = false) {
         // Create main car body group
@@ -319,67 +356,39 @@ class Car {
     }
 
     shootLaser() {
-        if (this.laserCooldown > 0 || this.isDestroyed || !this.scene) return;
-
-        // Create laser trail effect
-        const laserLength = 3;
-        const trailCount = 5;
-        const laserGroup = new THREE.Group();
+        if (this.laserCooldown > 0) return;
         
-        // Main laser beam
-        const laserGeometry = new THREE.BoxGeometry(0.2, 0.2, laserLength);
-        const laserMaterial = new THREE.MeshBasicMaterial({ 
-            color: this.laserColor,
-            transparent: true,
-            opacity: 0.9,
-        });
-        const mainBeam = new THREE.Mesh(laserGeometry, laserMaterial);
-        laserGroup.add(mainBeam);
-
-        // Add laser trails
-        for (let i = 0; i < trailCount; i++) {
-            const trailGeometry = new THREE.BoxGeometry(0.1, 0.1, laserLength * 0.8);
-            const trailMaterial = new THREE.MeshBasicMaterial({
-                color: this.laserColor,
-                transparent: true,
-                opacity: 0.3 - (i * 0.05)
-            });
-            const trail = new THREE.Mesh(trailGeometry, trailMaterial);
-            trail.position.z = -(i * 0.2);
-            laserGroup.add(trail);
-        }
-
-        // Position laser at car's front
-        const offset = 2.5;
-        laserGroup.position.copy(this.mesh.position);
-        laserGroup.position.y = 0.5;
-        laserGroup.position.x += Math.sin(this.mesh.rotation.y) * offset;
-        laserGroup.position.z += Math.cos(this.mesh.rotation.y) * offset;
-        laserGroup.rotation.y = this.mesh.rotation.y;
+        // Create laser mesh
+        const laserGeometry = new THREE.BoxGeometry(0.1, 0.1, 2);
+        const laserMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const laserMesh = new THREE.Mesh(laserGeometry, laserMaterial);
+        
+        // Position and orient the laser
+        const direction = new THREE.Vector3();
+        this.mesh.getWorldDirection(direction);
+        
+        const laserGroup = new THREE.Group();
+        laserGroup.add(laserMesh);
+        
+        const position = this.mesh.position.clone();
+        position.y += 0.5; // Adjust height
+        laserGroup.position.copy(position);
+        laserGroup.quaternion.copy(this.mesh.quaternion);
         
         this.scene.add(laserGroup);
         
-        // Set laser velocity
-        const speed = 2.5;
-        const velocity = new THREE.Vector3(
-            Math.sin(this.mesh.rotation.y) * speed,
-            0,
-            Math.cos(this.mesh.rotation.y) * speed
-        );
-
+        // Calculate velocity based on direction
+        const velocity = direction.multiplyScalar(2);
+        
         this.lasers.push({
             mesh: laserGroup,
             velocity: velocity,
             lifetime: 40
         });
 
-        // Play laser sound
-        try {
-            const laserSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA==');
-            laserSound.volume = 0.3;
-            laserSound.play();
-        } catch (e) {
-            console.log('Audio not supported');
+        // Play laser sound if audio is initialized
+        if (audioInitialized) {
+            playSound(880, 0.1, 'sawtooth', 0.2);
         }
 
         this.laserCooldown = 10; // Faster shooting
@@ -582,48 +591,44 @@ class Car {
     }
 
     createHitEffect(position) {
-        // Create expanding ring effect in white
-        const ringCount = 3;
         const rings = [];
+        const numRings = 3;
         
-        for (let i = 0; i < ringCount; i++) {
+        for (let i = 0; i < numRings; i++) {
             const ringGeometry = new THREE.RingGeometry(0.1, 0.2, 16);
-            const ringMaterial = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
+            const ringMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0xffffff, 
+                side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 1,
-                side: THREE.DoubleSide
+                opacity: 0.7
             });
             const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            
             ring.position.copy(position);
-            ring.rotation.x = Math.PI / 2;
-            ring.scale.set(0.1, 0.1, 0.1);
+            ring.rotation.x = Math.PI / 2; // Flat on the ground
+            
             this.scene.add(ring);
             rings.push(ring);
         }
-
-        // Animate rings
+        
         let scale = 0.1;
         const expandRings = setInterval(() => {
-            scale += 0.2;
-            rings.forEach((ring, index) => {
-                ring.scale.set(scale * (index + 1), scale * (index + 1), scale * (index + 1));
-                ring.material.opacity -= 0.05;
+            scale += 0.1;
+            
+            rings.forEach((ring, i) => {
+                ring.scale.set(scale + i * 0.5, scale + i * 0.5, 1);
+                ring.material.opacity = 0.7 - (scale / 3);
             });
-
+            
             if (scale >= 2) {
                 clearInterval(expandRings);
                 rings.forEach(ring => this.scene.remove(ring));
             }
         }, 30);
 
-        // Play hit sound
-        try {
-            const hitSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA==');
-            hitSound.volume = 0.4;
-            hitSound.play();
-        } catch (e) {
-            console.log('Audio not supported');
+        // Play hit sound if audio is initialized
+        if (audioInitialized) {
+            playSound(220, 0.2, 'square', 0.3);
         }
     }
 }
@@ -889,6 +894,18 @@ class Game {
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // Initialize audio on first user interaction
+        const initAudioOnInteraction = () => {
+            initAudio();
+            document.removeEventListener('click', initAudioOnInteraction);
+            document.removeEventListener('keydown', initAudioOnInteraction);
+            document.removeEventListener('touchstart', initAudioOnInteraction);
+        };
+        
+        document.addEventListener('click', initAudioOnInteraction);
+        document.addEventListener('keydown', initAudioOnInteraction);
+        document.addEventListener('touchstart', initAudioOnInteraction);
     }
     
     restartGame() {
@@ -1116,52 +1133,6 @@ class Game {
         requestAnimationFrame(() => this.animate());
         this.update();
         this.renderer.render(this.scene, this.camera);
-    }
-
-    createHitEffect(position) {
-        // Create expanding ring effect in white
-        const ringCount = 3;
-        const rings = [];
-        
-        for (let i = 0; i < ringCount; i++) {
-            const ringGeometry = new THREE.RingGeometry(0.1, 0.2, 16);
-            const ringMaterial = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 1,
-                side: THREE.DoubleSide
-            });
-            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-            ring.position.copy(position);
-            ring.rotation.x = Math.PI / 2;
-            ring.scale.set(0.1, 0.1, 0.1);
-            this.scene.add(ring);
-            rings.push(ring);
-        }
-
-        // Animate rings
-        let scale = 0.1;
-        const expandRings = setInterval(() => {
-            scale += 0.2;
-            rings.forEach((ring, index) => {
-                ring.scale.set(scale * (index + 1), scale * (index + 1), scale * (index + 1));
-                ring.material.opacity -= 0.05;
-            });
-
-            if (scale >= 2) {
-                clearInterval(expandRings);
-                rings.forEach(ring => this.scene.remove(ring));
-            }
-        }, 30);
-
-        // Play hit sound
-        try {
-            const hitSound = new Audio('data:audio/wav;base64,UklGRl9vAAAKAAAAIAAAACQAAAABACQAZGF0YT9vAAAAAAAAAA==');
-            hitSound.volume = 0.4;
-            hitSound.play();
-        } catch (e) {
-            console.log('Audio not supported');
-        }
     }
 }
 

@@ -3,31 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID - ENDLESS DRIFT</title>
+    <meta name="description" content="VOID - ENDLESS DRIFT: A minimalist driving game where you navigate through a grid-based world, avoiding hazards and enemy cars.">
+    <meta name="keywords" content="void, endless drift, driving game, 3D game, minimalist game, browser game">
+    <meta name="author" content="VOID Games">
+    <meta name="robots" content="index, follow">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="VOID">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://void.ompreetham.com">
+    <meta property="og:title" content="VOID | ENDLESS DRIFT">
+    <meta property="og:description" content="A minimalist driving game where you navigate through a grid-based world, avoiding hazards and enemy cars.">
+    <meta property="og:image" content="https://void.ompreetham.com/logo.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://void.ompreetham.com">
+    <meta property="twitter:title" content="VOID | ENDLESS DRIFT">
+    <meta property="twitter:description" content="A minimalist driving game where you navigate through a grid-based world, avoiding hazards and enemy cars.">
+    <meta property="twitter:image" content="https://void.ompreetham.com/logo.jpg">
+    
+    <title>VOID | ENDLESS DRIFT</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://void.ompreetham.com">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Structured Data for Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "VOID | ENDLESS DRIFT",
+      "description": "A minimalist driving game where you navigate through a grid-based world, avoiding hazards and enemy cars.",
+      "genre": ["Action", "Racing", "Arcade"],
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "image": "https://void.ompreetham.com/logo.jpg",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    </script>
 </head>
 <body>
-    <div class="logo-container">
-        <div class="logo-letters">
-            <div class="logo-letter">V</div>
-            <div class="logo-letter">O</div>
-            <div class="logo-letter">I</div>
-            <div class="logo-letter">D</div>
+    <header>
+        <div class="logo-container">
+            <div class="logo-letters">
+                <div class="logo-letter">V</div>
+                <div class="logo-letter">O</div>
+                <div class="logo-letter">I</div>
+                <div class="logo-letter">D</div>
+            </div>
+            <div class="logo-subtitle">ENDLESS DRIFT</div>
         </div>
-        <div class="logo-subtitle">ENDLESS DRIFT</div>
-    </div>
-    <div id="game"></div>
+    </header>
+    <main>
+        <div id="game" aria-label="VOID - Endless Drift Game"></div>
+    </main>
     <div class="touch-controls">
-        <div class="steering-overlay" id="steeringOverlay"></div>
+        <div class="steering-overlay" id="steeringOverlay" aria-label="Steering control area"></div>
         <div class="right-controls">
-            <button class="control-btn auto-drive" data-key="AutoDrive">
+            <button class="control-btn auto-drive" data-key="AutoDrive" aria-label="Toggle auto-drive">
                 <div class="auto-icon">A</div>
                 <div class="auto-status"></div>
             </button>
-            <button class="control-btn shoot-btn" data-key="Space">SHOOT</button>
+            <button class="control-btn shoot-btn" data-key="Space" aria-label="Shoot">SHOOT</button>
         </div>
     </div>
     <script src="game.js"></script>
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html> 
