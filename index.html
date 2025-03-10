@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID - ENDLESS DRIFT | Minimalist Racing Game</title>
+    <title>VOID - ENDLESS DRIFT</title>
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="VOID">
+    <link rel="apple-touch-icon" href="logo.jpg">
     
     <!-- Favicon -->
     <link rel="icon" href="logo.jpg" type="image/jpeg">
@@ -17,14 +25,14 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://void.ompreetham.com/">
-    <meta property="og:title" content="VOID - ENDLESS DRIFT | Minimalist Racing Game">
+    <meta property="og:title" content="VOID - ENDLESS DRIFT">
     <meta property="og:description" content="Drift through an endless grid, avoiding hazards and enemy cars in this minimalist racing experience.">
     <meta property="og:image" content="https://void.ompreetham.com/logo.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://void.ompreetham.com/">
-    <meta property="twitter:title" content="VOID - ENDLESS DRIFT | Minimalist Racing Game">
+    <meta property="twitter:title" content="VOID - ENDLESS DRIFT">
     <meta property="twitter:description" content="Drift through an endless grid, avoiding hazards and enemy cars in this minimalist racing experience.">
     <meta property="twitter:image" content="https://void.ompreetham.com/logo.jpg">
     
@@ -71,9 +79,9 @@
     <main>
         <div id="game" aria-label="VOID racing game interface"></div>
     </main>
-    <div class="steering-overlay" id="steeringOverlay" aria-label="Steering control area"></div>
-
+    
     <div class="touch-controls">
+        <div class="steering-overlay" id="steeringOverlay" aria-label="Steering control area"></div>
         <div class="right-controls">
             <button class="control-btn auto-drive" data-key="AutoDrive" aria-label="Toggle auto-drive">
                 <div class="auto-icon">A</div>
@@ -83,6 +91,34 @@
         </div>
     </div>
     
+    <!-- Offline notification -->
+    <div id="offline-message" style="display: none; position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
+        You are currently offline. Game will continue to work.
+    </div>
+    
     <script src="game.js"></script>
+    <script src="pwa.js"></script>
+    <script>
+        // Check for online/offline status
+        window.addEventListener('online', function() {
+            document.getElementById('offline-message').style.display = 'none';
+        });
+        
+        window.addEventListener('offline', function() {
+            document.getElementById('offline-message').style.display = 'block';
+        });
+        
+        // Check initial status
+        if (!navigator.onLine) {
+            document.getElementById('offline-message').style.display = 'block';
+        }
+    </script>
+    
+    <!-- Fallback for browsers that don't support service workers -->
+    <noscript>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; background: #f00; color: white; text-align: center; padding: 10px;">
+            This game requires JavaScript to be enabled.
+        </div>
+    </noscript>
 </body>
 </html> 
